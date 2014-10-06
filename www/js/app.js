@@ -37,7 +37,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     })
 
     // Each tab has its own nav history stack:
-
     .state('tab.dash', {
       url: '/dash',
       views: {
@@ -57,6 +56,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
       }
     })
+    
     .state('tab.friend-detail', {
       url: '/friend/:friendId',
       views: {

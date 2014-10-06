@@ -1,7 +1,7 @@
-angular.module('starter.controllers', [])
+angular.module( 'starter.controllers', [] )
 
-.controller('DashCtrl', function($scope) {
+.controller( 'DashCtrl', function( $scope ) {
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller( 'AccountCtrl', function( $scope ) {
 });

@@ -1,0 +1,14 @@
+<ion-view title="Dashboard">
+  <ion-content class="padding">
+    <h1>Dash</h1>
+
+    <!-- Account Linking/Smoke Test -->
+    <button ng-if"! isDropboxLinked" class="button button-block button-positive">
+      Link Account
+    </button>
+
+    <button ng-if"isDropboxLinked" class="button button-block button-assertive">
+      Unlink Account
+    </button>
+  </ion-content>
+</ion-view>

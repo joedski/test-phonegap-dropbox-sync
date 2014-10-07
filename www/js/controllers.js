@@ -1,35 +1,23 @@
 angular.module( 'starter.controllers', [] )
 
-.controller( 'DashCtrl', function( $scope, dropbox ) {
+.controller( 'DashCtrl', function( $scope, dropboxSync ) {
 	$scope.isDropboxLinked = false;
 	$scope.isDropboxLinkInProgress = true;
 
-	dropbox.checkLink()
-		.done( function dropboxIsLinked() {
-			$scope.isDropboxLinked = true;
-		})
-		.fail( function dropboxIsNotLinked() {
-			$scope.isDropboxLinked = false;
-		})
-		[ 'finally' ]( function stopProgress() {
-			$scope.isDropboxLinkInProgress = false;
-		});
+	console.log( 'DashCtrl' );
+
+	dropboxSync.checkLink()
+		.then( dropboxIsLinked, dropboxIsNotLinked )
+		[ 'finally' ]( stopProgress );
 
 	$scope.link = function callDropboxLink() {
 		if( $scope.isDropboxLinked ) return;
 
 		$scope.isDropboxLinkInProgress = true;
 
-		dropbox.link()
-			.done( function dropboxIsLinked() {
-				$scope.isDropboxLinked = true;
-			})
-			.fail( function dropboxIsNotLinked() {
-				$scope.isDropboxLinked = false;
-			})
-			[ 'finally' ]( function stopProgress() {
-				$scope.isDropboxLinkInProgress = false;
-			});
+		dropboxSync.link()
+			.then( dropboxIsLinked, dropboxIsNotLinked )
+			[ 'finally' ]( stopProgress );
 	};
 
 	$scope.unlink = function callDropboxUnlink() {
@@ -37,17 +25,27 @@ angular.module( 'starter.controllers', [] )
 
 		$scope.isDropboxLinkInProgress = true;
 
-		dropbox.unlink()
-			.done( function dropboxIsNotLinked() {
-				$scope.isDropboxLinked = false;
-			})
-			.fail( function dropboxIsLinked() {
-				$scope.isDropboxLinked = true;
-			})
-			[ 'finally' ]( function stopProgress() {
-				$scope.isDropboxLinkInProgress = false;
-			});
+		dropboxSync.unlink()
+			// The fail condition should really be something about errorUnlinking or something.
+			.then( dropboxIsNotLinked, dropboxIsLinked )
+			[ 'finally' ]( stopProgress );
 	};
+
+	function dropboxIsLinked() {
+		console.log( "dropboxIsLinked" );
+		$scope.isDropboxLinked = true;
+	}
+
+	function dropboxIsNotLinked() {
+		console.log( "dropboxIsNotLinked" );
+		$scope.isDropboxLinked = false;
+	}
+
+	function stopProgress() {
+		console.log( "stopProgress" );
+		$scope.isDropboxLinkInProgress = false;
+		// $scope.$apply();
+	}
 })
 
 .controller( 'AccountCtrl', function( $scope ) {

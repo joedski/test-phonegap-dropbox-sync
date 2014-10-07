@@ -22,8 +22,19 @@
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
+
+    <!-- manual start. -->
+    <script>
+    // This seems to make it actually work after all the Cordova plugins are loaded,
+    // which only seems to happen the first time it launches. Odd.
+    // https://github.com/driftyco/ng-cordova/issues/8#issuecomment-48703042
+    window.ionic.Platform.ready( function startApp() {
+      angular.bootstrap( document, [ 'starter' ] );
+    });
+    </script>
   </head>
-  <body ng-app="starter" animation="slide-left-right-ios7">
+  <!-- <body ng-app="starter" animation="slide-left-right-ios7"> -->
+  <body animation="slide-left-right-ios7">
     <!-- 
       The nav bar that will be updated as we navigate between views.
     -->

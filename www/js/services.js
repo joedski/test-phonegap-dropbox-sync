@@ -1,10 +1,9 @@
 angular.module('starter.services', [])
 
-;
-
-.factory( 'dropbox', [ '$q' ], function( $q ) {
-  var dropbox = window.dropbox;
-  var ngDropbox = {};
+.factory( 'dropboxSync', function( $q ) {
+  var prop;
+  var dropboxSync = window.dropbox.sync;
+  var ngDropboxSync = {};
   var slice = [].slice;
 
   function wrapDropboxCall( originalCall ) {
@@ -24,15 +23,15 @@ angular.module('starter.services', [])
 
       originalCall.apply( null, args );
 
-      return deferred.promise();
-    }
+      return deferred.promise;
+    };
   }
 
-  for( prop in dropbox ) {
-    if( ! dropbox.hasOwnProperty( prop ) ) continue;
+  for( prop in dropboxSync ) {
+    if( ! dropboxSync.hasOwnProperty( prop ) ) continue;
 
-    ngDropbox[ prop ] = wrapDropboxCall( dropbox[ prop ] );
+    ngDropboxSync[ prop ] = wrapDropboxCall( dropboxSync[ prop ] );
   }
 
-  return ngDropbox;
+  return ngDropboxSync;
 });

@@ -1,14 +1,12 @@
 angular.module( 'starter.controllers', [] )
 
-.controller( 'DashCtrl', function( $scope, dropboxSync ) {
+.controller( 'DashCtrl', function( $scope, dropboxSync, $location ) {
 	$scope.isDropboxLinked = false;
 	$scope.isDropboxLinkInProgress = true;
 
 	console.log( 'DashCtrl' );
 
-	dropboxSync.checkLink()
-		.then( dropboxIsLinked, dropboxIsNotLinked )
-		[ 'finally' ]( stopProgress );
+	checkDropboxLink();
 
 	$scope.link = function callDropboxLink() {
 		if( $scope.isDropboxLinked ) return;
@@ -16,7 +14,7 @@ angular.module( 'starter.controllers', [] )
 		$scope.isDropboxLinkInProgress = true;
 
 		dropboxSync.link()
-			.then( dropboxIsLinked, dropboxIsNotLinked )
+			.then( checkDropboxLink, errorCheckingDropboxLink )
 			[ 'finally' ]( stopProgress );
 	};
 
@@ -26,25 +24,64 @@ angular.module( 'starter.controllers', [] )
 		$scope.isDropboxLinkInProgress = true;
 
 		dropboxSync.unlink()
-			// The fail condition should really be something about errorUnlinking or something.
-			.then( dropboxIsNotLinked, dropboxIsLinked )
+			.then( checkDropboxLink, errorCheckingDropboxLink )
 			[ 'finally' ]( stopProgress );
 	};
 
-	function dropboxIsLinked() {
-		console.log( "dropboxIsLinked" );
-		$scope.isDropboxLinked = true;
+	$scope.viewFileList = function viewFileList() {
+		$location.path( '/files/' );
+	};
+
+	function checkDropboxLink() {
+		dropboxSync.checkLink()
+			.then( updateDropboxIsLinked, errorCheckingDropboxLink )
+			[ 'finally' ]( stopProgress );
 	}
 
-	function dropboxIsNotLinked() {
-		console.log( "dropboxIsNotLinked" );
-		$scope.isDropboxLinked = false;
+	function updateDropboxIsLinked( isLinked ) {
+		$scope.isDropboxLinked = isLinked;
+	}
+
+	function errorCheckingDropboxLink( error ) {
+		console.log( "errorCheckingDropboxLink:" );
+		console.log( error );
 	}
 
 	function stopProgress() {
 		console.log( "stopProgress" );
 		$scope.isDropboxLinkInProgress = false;
-		// $scope.$apply();
+	}
+})
+
+.controller( 'FileListCtrl', function( $scope, $stateParams, dropboxSync, normalizePath ) {
+	$scope.currentPath = $stateParams.path;
+
+	$scope.fileList = [];
+	$scope.isLoading = false;
+
+	showFileListAt( $scope.currentPath );
+
+	// Currently non-interactive...
+
+	function showFileListAt( path ) {
+		path = normalizePath( '/' + path );
+
+		$scope.isLoading = true;
+
+		dropboxSync.listFolder()
+		.then(
+			function showListedFolder( folderContentsList ) {
+				$scope.fileList = folderContentsList;
+			},
+			function errorRetrievingFolderContents( error ) {
+				$scope.fileList = [];
+				console.log( 'errorRetrievingFolderContents:' );
+				console.log( error );
+			}
+		)
+		['finally']( function stopProgress() {
+			$scope.isLoading = false;
+		});
 	}
 })
 

@@ -1,26 +1,38 @@
 <ion-view title="Dashboard">
     <ion-content class="padding">
-        <h1>Dash</h1>
-
         <!-- Account Linking/Smoke Test -->
         <div ng-if="! isDropboxLinkInProgress">
             <button ng-if="! isDropboxLinked"
-            	ng-click="link();"
-            	class="button button-block button-positive">
+                ng-click="link();"
+                class="button button-block button-positive">
                 Link Account
             </button>
 
             <button ng-if="isDropboxLinked"
-            	ng-click="unlink();"
-            	class="button button-block button-assertive">
+                ng-click="unlink();"
+                class="button button-block button-assertive">
                 Unlink Account
             </button>
         </div>
         <div ng-if="isDropboxLinkInProgress">
-        	checking...
-        	<button class="button button-block button-stable disabled">
-        		i.icon.ion-loading-d
-        	</button>
+            <button class="button button-block button-stable disabled">
+                <i class="icon ion-loading-d"></i>
+            </button>
         </div>
+
+        <!-- Placeholder... -->
+        <div ng-if="! isDropboxLinked">
+            <p>Cannot do anything else without being linked to a Dropbox account!</p>
+        </div>
+
+        <!-- See list of files in root of dropbox -->
+        <div ng-if="isDropboxLinked">
+            <button
+                ng-click="viewFileList();"
+                class="button button-block button-stable">
+                View File List At /
+            </button>
+        </div>
+
     </ion-content>
 </ion-view>

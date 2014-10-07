@@ -1,0 +1,19 @@
+<ion-view title="Files in {{currentPath}}">
+	<ion-content class="padding">
+		<div ng-if="isLoading">
+			<div><i class="icon ion-loading-d"></i></div>
+			<p>Loading...</p>
+		</div>
+
+		<ion-list
+			ng-if="! isLoading">
+			<ion-item type="item"
+				ng-repeat="file in fileList"
+				class="item-icon-left">
+				<!-- href="/tab/daily/{{file.id}}"> -->
+
+				<h2>{{path | baseName}}</h2>
+			</ion-item>
+		</ion-list>
+	</ion-content>
+</ion-view>

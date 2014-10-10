@@ -52,10 +52,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     })
 
-    .state('tab.dash.filelist', {
-      url: '/files/*path',
+    .state('tab.filelist', {
+      url: '/files',
       views: {
-        'file-list': {
+        'tab-dash': {
           templateUrl: 'templates/file-list.html',
           controller: 'FileListCtrl'
         }

@@ -11,26 +11,41 @@ angular.module('starter.filters', [])
 		// replace backslashes with slashes.
 		filePath = filePath.replace( /\\/g, '/' );
 
-		// Remove trailing slashes.
-		filePath = filePath.replace( /\/*$/, '' );
-
 		// collapse runs of slashes.
 		filePath = filePath.replace( /\/+/g, '/' );
+
+		// Remove trailing slashes.
+		filePath = filePath.replace( /(.+)\/*$/, '$1' );
 
 		return filePath;
 	};
 })
 
-.filter( 'baseName', function() {
+.filter( 'baseName', function( $filter ) {
 	return function baseName( filePath ) {
-		filePath = normalizePath( filePath );
+		filePath = $filter( 'normalizePath' )( filePath );
 		return (/([^\/]+)$/).exec( filePath )[ 1 ] || '';
 	};
 })
 
-.filter( 'dirName', function( normalizePath ) {
+// dirName is a bit more complicated:
+// dirName '/' -> '/'
+// dirName '/foo' -> '/'
+// dirName 'foo' -> '.'
+// dirName 'foo/bar' -> 'foo'
+// dirName '/foo/bar' -> '/foo'
+.filter( 'dirName', function( $filter ) {
 	return function dirName( filePath ) {
-		filePath = normalizePath( filePath );
-		return normalizePath( filePath.replace( (/^(.*?)([^\/]+)$/), '$1' ) );
+		filePath = filePath.replace( /\/+/g, '/' );
+
+		if( /^\/[^\/]*$/.test( filePath ) ) {
+			return '/';
+		}
+
+		if( /^[^\/]*$/.test( filePath ) ) {
+			return '.';
+		}
+
+		return $filter( 'normalizePath' )( filePath.replace( /\/[^\/]+$/, '' ) );
 	};
 });

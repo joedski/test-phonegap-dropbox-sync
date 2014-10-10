@@ -8,10 +8,15 @@ angular.module( 'starter.controllers', [] )
 
 	checkDropboxLink();
 
+	$scope.$on( 'accountChange', function onAccountChange( event ) {
+		console.log( 'DashCtrl: onAccountChange' );
+		checkDropboxLink();
+	});
+
 	$scope.link = function callDropboxLink() {
 		if( $scope.isDropboxLinked ) return;
 
-		$scope.isDropboxLinkInProgress = true;
+		startProgress();
 
 		dropboxSync.link()
 			.then( checkDropboxLink, errorCheckingDropboxLink )
@@ -21,30 +26,41 @@ angular.module( 'starter.controllers', [] )
 	$scope.unlink = function callDropboxUnlink() {
 		if( ! $scope.isDropboxLinked ) return;
 
-		$scope.isDropboxLinkInProgress = true;
+		startProgress();
 
 		dropboxSync.unlink()
 			.then( checkDropboxLink, errorCheckingDropboxLink )
 			[ 'finally' ]( stopProgress );
 	};
 
-	$scope.viewFileList = function viewFileList() {
-		$location.path( '/files/' );
-	};
+	// $scope.viewFileList = function viewFileList() {
+	// 	console.log( "DashCtrl: viewFileList" );
+	// 	$location.path( '/files/' );
+	// };
 
 	function checkDropboxLink() {
+		console.log( "checkDropboxLink" );
+
+		startProgress();
+
 		dropboxSync.checkLink()
 			.then( updateDropboxIsLinked, errorCheckingDropboxLink )
 			[ 'finally' ]( stopProgress );
 	}
 
 	function updateDropboxIsLinked( isLinked ) {
+		console.log( 'updateDropboxIsLinked:', isLinked );
 		$scope.isDropboxLinked = isLinked;
 	}
 
 	function errorCheckingDropboxLink( error ) {
 		console.log( "errorCheckingDropboxLink:" );
 		console.log( error );
+	}
+
+	function startProgress() {
+		console.log( "startProgress" );
+		$scope.isDropboxLinkInProgress = true;
 	}
 
 	function stopProgress() {
@@ -79,7 +95,7 @@ angular.module( 'starter.controllers', [] )
 				console.log( error );
 			}
 		)
-		['finally']( function stopProgress() {
+		['finally']( function stopLoading() {
 			$scope.isLoading = false;
 		});
 	}

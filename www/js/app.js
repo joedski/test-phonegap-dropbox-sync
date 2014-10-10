@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.filters'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, dropboxSync) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -18,6 +18,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    dropboxSync.on( 'accountChange', function onAccountChange() {
+      console.log( "AngularAppRoot: received accountChange event!  Broadcasting on root scope..." );
+      $rootScope.$broadcast( 'accountChange' );
+    });
   });
 })
 

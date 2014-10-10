@@ -53,7 +53,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     })
 
     .state('tab.filelist', {
-      url: '/files',
+      url: '/files/*path', // at root as I use it, I guess it results in "#/files//", the second being the '/' of root.
       views: {
         'tab-dash': {
           templateUrl: 'templates/file-list.html',

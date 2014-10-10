@@ -9,10 +9,14 @@
 			ng-if="! isLoading">
 			<ion-item type="item"
 				ng-repeat="file in fileList"
-				class="item-icon-left">
+				ng-click="showFile( file );"
+				class="item-icon-right">
+				<!-- href="#/files/{{ file.path }}" -->
 				<!-- href="/tab/daily/{{file.id}}"> -->
 
 				<h2>{{file.path | baseName}}</h2>
+
+				<i class="icon ion-chevron-right" ng-if="file.isFolder"></i>
 			</ion-item>
 		</ion-list>
 	</ion-content>

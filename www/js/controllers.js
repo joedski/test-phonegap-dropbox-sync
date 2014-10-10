@@ -35,8 +35,8 @@ angular.module( 'starter.controllers', [] )
 
 	$scope.viewFileList = function viewFileList() {
 		console.log( "DashCtrl: viewFileList" );
-		// $state.go( 'tab.filelist', { path: '/' } );
-		$state.go( 'tab.filelist' );
+		$state.go( 'tab.filelist', { path: '/' } );
+		// $state.go( 'tab.filelist' );
 	};
 
 	function checkDropboxLink() {
@@ -70,21 +70,23 @@ angular.module( 'starter.controllers', [] )
 	}
 })
 
-.controller( 'FileListCtrl', function( $scope, $stateParams, dropboxSync, $filter ) {
+.controller( 'FileListCtrl', function( $scope, $stateParams, $state, dropboxSync, $filter ) {
 	console.log( "FileListCtrl" );
 
-	// $scope.currentPath = $stateParams.path;
-	$scope.currentPath = '/';
+	$scope.currentPath = $stateParams.path;// || '/';
+	// $scope.currentPath = '/';
 
 	$scope.fileList = [];
 	$scope.isLoading = false;
+
+	$scope.showFile = showFile;
 
 	showFileListAt( $scope.currentPath );
 
 	// Currently non-interactive...
 
 	function showFileListAt( path ) {
-	console.log( "FileListCtrl: showFileListAt", path );
+		console.log( "FileListCtrl: showFileListAt", path );
 		path = $filter( 'normalizePath' )( '/' + path );
 
 		$scope.isLoading = true;
@@ -103,6 +105,17 @@ angular.module( 'starter.controllers', [] )
 		['finally']( function stopLoading() {
 			$scope.isLoading = false;
 		});
+	}
+
+	function showFile( file ) {
+		console.log( "FileListCtrl.showFile:", file );
+
+		if( file.isFolder ) {
+			$state.go( 'tab.filelist', { path: file.path } );
+		}
+		else {
+			console.log( "showFileContents:", file.path );
+		}
 	}
 })
 

@@ -35,8 +35,11 @@ angular.module( 'starter.controllers', [] )
 
 	$scope.viewFileList = function viewFileList() {
 		console.log( "DashCtrl: viewFileList" );
-		$state.go( 'tab.filelist', { path: '/' } );
-		// $state.go( 'tab.filelist' );
+		$state.go( 'tab.dash.filelist', { path: '/' } );
+	};
+
+	$scope.showScratchFile = function showScratchFile() {
+		$state.go( 'tab.dash.filecontent', { path: '/scratch.txt' } );
 	};
 
 	function checkDropboxLink() {
@@ -73,8 +76,7 @@ angular.module( 'starter.controllers', [] )
 .controller( 'FileListCtrl', function( $scope, $stateParams, $state, dropboxSync, $filter ) {
 	console.log( "FileListCtrl" );
 
-	$scope.currentPath = $stateParams.path;// || '/';
-	// $scope.currentPath = '/';
+	$scope.currentPath = $stateParams.path;
 
 	$scope.fileList = [];
 	$scope.isLoading = false;
@@ -82,8 +84,6 @@ angular.module( 'starter.controllers', [] )
 	$scope.showFile = showFile;
 
 	showFileListAt( $scope.currentPath );
-
-	// Currently non-interactive...
 
 	function showFileListAt( path ) {
 		console.log( "FileListCtrl: showFileListAt", path );
@@ -111,11 +111,49 @@ angular.module( 'starter.controllers', [] )
 		console.log( "FileListCtrl.showFile:", file );
 
 		if( file.isFolder ) {
-			$state.go( 'tab.filelist', { path: file.path } );
+			$state.go( 'tab.dash.filelist', { path: file.path } );
 		}
 		else {
 			console.log( "showFileContents:", file.path );
 		}
+	}
+})
+
+.controller( 'FileContentCtrl', function( $scope, $stateParams, dropboxSync ) {
+	console.log( "FileContentCtrl:", $stateParams.path );
+
+	$scope.path = $stateParams.path;
+	$scope.fileContent = '';
+	$scope.errorMessage = '';
+	// Just assuming text for now.
+	$scope.fileType = 'text';
+
+	startLoading();
+	readFile();
+
+	function readFile() {
+		dropboxSync.readString( $scope.path )
+		.then(
+			showFile,
+			showError
+		)
+		['finally']( endLoading );
+	}
+
+	function showFile( contentString ) {
+		$scope.fileContent = contentString;
+	}
+
+	function showError( error ) {
+		$scope.errorMessage = "Could not load file at '" + String( $scope.path ) + "'.";
+	}
+
+	function startLoading() {
+		$scope.isLoading = true;
+	}
+
+	function endLoading() {
+		$scope.isLoading = true;
 	}
 })
 

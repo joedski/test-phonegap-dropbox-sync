@@ -43,6 +43,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
     // Each tab has its own nav history stack:
     .state('tab.dash', {
+      // I learned that this URL is appended to the parent one, or something.
+      // I had '/tab/dash' in here, which caused a black screen to show up.
+      // I guess it tried to redirect to /tab/dash but this state was expecting
+      // /tab/tab/dash.
+      // See the section "URL Routing for Nested States":
+      // https://github.com/angular-ui/ui-router/wiki/URL-Routing
       url: '/dash',
       views: {
         'tab-dash': {
@@ -52,12 +58,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     })
 
-    .state('tab.filelist', {
+    .state('tab.dash.filelist', {
       url: '/files/*path', // at root as I use it, I guess it results in "#/files//", the second being the '/' of root.
       views: {
         'tab-dash': {
           templateUrl: 'templates/file-list.html',
           controller: 'FileListCtrl'
+        }
+      }
+    })
+
+    .state('tab.dash.filecontent', {
+      url: '/file/*path',
+      views: {
+        'tab-dash': {
+          templateUrl: 'templates/file-content.html',
+          controller: 'FileContentCtrl'
         }
       }
     })

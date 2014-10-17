@@ -1,0 +1,16 @@
+<ion-view title="{{ path }}">
+	<ion-content class="padding">
+		<div ng-if="isLoading">
+			<div><i class="icon ion-loading-d"></i></div>
+			<p>Loading...</p>
+		</div>
+
+		<div ng-if="! isLoading && !errorMessage">
+			<pre>{{ fileContents }}</pre>
+		</div>
+
+		<div ng-if="! isLoading && errorMessage">
+			<p>{{ errorMessage }}</p>
+		</div>
+	</ion-content>
+</ion-view>
